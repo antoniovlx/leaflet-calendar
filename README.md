@@ -1,6 +1,6 @@
 # leaflet-calendar
 
-[![npm](https://img.shields.io/npm/v/leaflet-contextmenu.svg)](https://www.npmjs.com/package/leaflet-calendar)
+[![npm](https://img.shields.io/npm/v/leaflet-calendar.svg)](https://www.npmjs.com/package/leaflet-calendar)
 
 
 A calendar date picker for Leaflet.
