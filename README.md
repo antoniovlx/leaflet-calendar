@@ -5,6 +5,9 @@
 
 A calendar date picker for Leaflet.
 
+![calendar picker](./examples/images/control.png)
+![calendar picker opened](./examples/images/control-opened.png)
+
 ##Usage
 
 ````javascript
