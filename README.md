@@ -1,5 +1,5 @@
 # leaflet-calendar
-====================
+
 [![npm](https://img.shields.io/npm/v/leaflet-contextmenu.svg)](https://www.npmjs.com/package/leaflet-calendar)
 
 

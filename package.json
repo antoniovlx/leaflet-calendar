@@ -16,6 +16,9 @@
     "type": "git",
     "url": "https://github.com/antoniovlx/leaflet-calendar.git"
   },
+	"publishConfig": {
+		"@antoniovida:registry": "https://npm.pkg.github.com"
+	},
   "keywords": [
     "leaflet",
 		"control",
