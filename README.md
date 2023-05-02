@@ -1,4 +1,4 @@
-#leaflet-calendar
+# leaflet-calendar
 ====================
 [![npm](https://img.shields.io/npm/v/leaflet-contextmenu.svg)](https://www.npmjs.com/package/leaflet-calendar)
 
@@ -7,7 +7,7 @@ A calendar date picker for Leaflet.
 
 ![calendar picker opened](./examples/images/control-opened.png)
 
-##Usage
+## Usage
 
 ````javascript
  L.control.calendar({
@@ -24,5 +24,5 @@ A calendar date picker for Leaflet.
   }
 ````
 
-##License
+## License
 This software is released under the [MIT licence](http://www.opensource.org/licenses/mit-license.php). Icon used in the example are from [https://www.flaticon.com](https://www.flaticon.com).
