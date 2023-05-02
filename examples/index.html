@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Leaflet Context Menu</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <link rel="stylesheet" href="../css/leaflet-calendar.css" />
+</head>
+
+<body>
+    <div id="map" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="../js/leaflet-calendar.js"></script>
+    <script>
+        var map, cm;
+        var centerPoint = new L.LatLng(-36.852668, 174.762675);
+
+        function onSelectDate(value){
+            alert(`Date: ${value}`);
+        }
+
+        map = L.map('map', {
+            center: centerPoint,
+            zoom: 15
+        });
+
+        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        L.control.calendar({
+            id: 1,
+            minDate: "2023-04-01",
+            maxDate: "2023-04-29",
+            onSelectDate: (value) => this.onSelectDate(value),
+            position: "topleft",
+        }).addTo(this.map);
+
+    </script>
+</body>
+
+</html>

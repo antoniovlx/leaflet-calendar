@@ -9,6 +9,8 @@ A calendar date picker for Leaflet.
 
 ## Usage
 
+See the [demo](http://antoniovlx.github.io/leaflet-calendar/examples/index.html).
+
 ````javascript
  L.control.calendar({
       id: 1,
