@@ -5,11 +5,11 @@
 
 A calendar date picker for Leaflet.
 
+See the [demo](http://antoniovlx.github.io/leaflet-calendar/examples/index.html).
+
 ![calendar picker opened](./examples/images/control-opened.png)
 
 ## Usage
-
-See the [demo](http://antoniovlx.github.io/leaflet-calendar/examples/index.html).
 
 ````javascript
  L.control.calendar({

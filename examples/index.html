@@ -13,7 +13,7 @@
     <script src="../js/leaflet-calendar.js"></script>
     <script>
         var map, cm;
-        var centerPoint = new L.LatLng(-36.852668, 174.762675);
+        var centerPoint = new L.LatLng(37.1259000, -4.7510700);
 
         function onSelectDate(value){
             alert(`Date: ${value}`);
@@ -21,7 +21,7 @@
 
         map = L.map('map', {
             center: centerPoint,
-            zoom: 15
+            zoom: 7
         });
 
         L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
