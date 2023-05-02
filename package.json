@@ -1,0 +1,38 @@
+{
+  "name": "leaflet-calendar",
+  "version": "1.0.0",
+  "description": "A context menu for Leaflet",
+  "main": "js/leaflet-calendar.js",
+	"types": "index.d.ts",
+	"styles": "css/leaflet-calendar.css",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "concat": "cat src/copyright.js src/Map.ContextMenu.js src/Mixin.ContextMenu.js src/end.js > dist/leaflet.calendar.js",
+    "compress": "node_modules/uglify-js/bin/uglifyjs dist/leaflet.calendar.js -m --comments -o dist/leaflet.calendar.min.js; node_modules/uglifycss/uglifycss dist/leaflet.calendar.css > dist/leaflet.calendar.min.css",
+    "build": "npm run concat && npm run compress"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/antoniovlx/leaflet-calendar.git"
+  },
+  "keywords": [
+    "leaflet",
+    "contextmenu",
+    "mixin",
+    "context",
+    "menu"
+  ],
+  "author": "Antonio Vida",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/antoniovlx/leaflet-calendar/issues"
+  },
+  "homepage": "https://github.com/antoniovlx/leaflet-calendar/",
+  "devDependencies": {
+    "@types/leaflet": "^1.9.3",
+    "uglify-js": "^2.7.4",
+    "uglifycss": "^0.0.25"
+  }
+}
