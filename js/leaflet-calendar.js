@@ -11,23 +11,20 @@ L.Control.Calendar = L.Control.extend({
 		minDate: '',
 		maxDate: '',
 		value: new Date().toJSON().slice(0, 10),
-		onSelectDate: (value) => console.log("The function is mandatory"),
+		onSelectDate: function (value){
+			console.log("The function is mandatory")
+		},
 		marginLeft: "10px",
 		marginRight: "10px",
 		marginTop: "10px",
 		marginBottom: "10px",
 	},
 	initialize: function (options) {
-		if (typeof options.changeMap != "function") {
-			options.onSelectDate = function ({ label, value, map }) {
-				console.log("You are not using the value or label from the timeline to change the map.");
+		if (typeof options.onSelectDate != "function") {
+			options.onSelectDate = function (value) {
+				console.log("The function is mandatory");
 			};
 		}
-
-		if (parseFloat(options.thumbHeight) <= 2) {
-			console.log("The nodes on the timeline will not appear properly if its radius is less than 2px.")
-		}
-
 		L.setOptions(this, options);
 	},
 	onAdd: function (map) {

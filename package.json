@@ -1,6 +1,6 @@
 {
   "name": "leaflet-calendar",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A context menu for Leaflet",
   "main": "js/leaflet-calendar.js",
 	"types": "index.d.ts",
@@ -9,7 +9,7 @@
     "example": "examples"
   },
   "scripts": {
-    "compress": "node_modules/uglify-js/bin/uglifyjs dist/leaflet.calendar.js -m --comments -o dist/leaflet.calendar.min.js; node_modules/uglifycss/uglifycss dist/leaflet.calendar.css > dist/leaflet.calendar.min.css",
+    "compress": "uglifyjs js\\leaflet-calendar.js -m --comments -o js\\leaflet-calendar.min.js; uglifycss css\\leaflet-calendar.css > css\\leaflet-calendar.min.css",
     "build": "npm run compress"
   },
   "repository": {
