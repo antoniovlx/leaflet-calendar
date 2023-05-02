@@ -9,9 +9,8 @@
     "example": "examples"
   },
   "scripts": {
-    "concat": "cat src/copyright.js src/Map.ContextMenu.js src/Mixin.ContextMenu.js src/end.js > dist/leaflet.calendar.js",
     "compress": "node_modules/uglify-js/bin/uglifyjs dist/leaflet.calendar.js -m --comments -o dist/leaflet.calendar.min.js; node_modules/uglifycss/uglifycss dist/leaflet.calendar.css > dist/leaflet.calendar.min.css",
-    "build": "npm run concat && npm run compress"
+    "build": "npm run compress"
   },
   "repository": {
     "type": "git",
@@ -19,10 +18,11 @@
   },
   "keywords": [
     "leaflet",
-    "contextmenu",
-    "mixin",
-    "context",
-    "menu"
+		"control",
+    "calendar",
+    "date",
+    "picker",
+		"map"
   ],
   "author": "Antonio Vida",
   "license": "MIT",
