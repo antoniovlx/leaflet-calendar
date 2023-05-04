@@ -14,7 +14,7 @@ L.Control.Calendar = L.Control.extend({
 		onSelectDate: function (value) {
 			console.log("The function is mandatory")
 		},
-		triggerFunctionOnLoad: true,
+		triggerFunctionOnLoad: false,
 		backButton: true,
 		nextButton: true,
 		marginLeft: "10px",
