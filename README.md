@@ -39,6 +39,9 @@ See table below for full description of customizable options for your calendar p
 | maxDate | Maximun selectable date value in the calendar. | '' |
 | value | Initial date selected (YYYY-MM-DD). | Current date |
 | onSelectDate   | Function that will execute when a date is selected.  | `function(value) { console.log("The function is mandatory"); }` |
+| triggerFunctionOnLoad | Trigger `onSelectDate` function on first load | false |
+| nextButton | Add a next button | true |
+| backButton | Add a back button | true |
 | marginLeft   | Left margin in pixels of the container | "10px" |
 | marginRight   | Right margin in pixels of the container | "10px" |
 | marginTop | Top margin in pixels of the container | "10px" |

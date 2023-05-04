@@ -6,20 +6,18 @@ declare module 'leaflet' {
   namespace Control {
 
     interface CalendarOptions {
-      id: number;
       position?: ControlPosition;
       minDate?: string;
       maxDate?: string;
       value?: string;
       onSelectDate: Function;
-      labelWidth?: string;
-      labelFontSize?: string;
-      backgroundOpacity?: number;
-      backgroundColor?: string;
-      topBgPadding?: string;
-      bottomBgPadding?: string;
-      rightBgPadding?: string;
-      leftBgPadding?: string;
+      triggerFunctionOnLoad?: boolean;
+      nextButton?: boolean;
+      backButton?: boolean;
+      marginLeft?: string;
+      marginRight?: string;
+      marginTo?: string;
+      marginBotton?: string;
     }
 
     export class Calendar extends L.Control {

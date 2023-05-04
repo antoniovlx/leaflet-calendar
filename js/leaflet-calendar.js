@@ -11,14 +11,18 @@ L.Control.Calendar = L.Control.extend({
 		minDate: '',
 		maxDate: '',
 		value: new Date().toJSON().slice(0, 10),
-		onSelectDate: function (value){
+		onSelectDate: function (value) {
 			console.log("The function is mandatory")
 		},
+		triggerFunctionOnLoad: true,
+		backButton: true,
+		nextButton: true,
 		marginLeft: "10px",
 		marginRight: "10px",
 		marginTop: "10px",
 		marginBottom: "10px",
 	},
+
 	initialize: function (options) {
 		if (typeof options.onSelectDate != "function") {
 			options.onSelectDate = function (value) {
@@ -33,11 +37,22 @@ L.Control.Calendar = L.Control.extend({
 		document.body.appendChild(this.sheet);
 
 		this.container = L.DomUtil.create('div', 'date-control-container');
-		this.container.innerHTML =
+
+		if (this.options.backButton) {
+			this.addBackButton();
+		}
+
+		this.inputDate = L.DomUtil.create('div', 'date-control', this.container);
+
+		this.inputDate.innerHTML =
 			`<input type="date" name="date" id="input-control-date-picker" value="${this.options.value}"
 			min=${this.options.minDate} max="${this.options.maxDate}"></input>`;
 
-	  this._setupStylesContainer();
+		if (this.options.nextButton) {
+			this.addNextButton();
+		}
+
+		this._setupStylesContainer();
 
 		/* Prevent click events propagation to map */
 		L.DomEvent.disableClickPropagation(this.container);
@@ -51,20 +66,65 @@ L.Control.Calendar = L.Control.extend({
 		L.DomEvent.disableScrollPropagation(this.container);
 
 		/* When container is clicked picker is opened */
-		L.DomEvent.addListener(this.container, 'click', this.open.bind(this));
+		L.DomEvent.addListener(this.inputDate, 'click', this.open.bind(this));
 
 		/* When input date changes trigger user's onSelectDate function */
-		L.DomEvent.addListener(this.container, 'change', this.triggerOnSelectedDate.bind(this));
+		L.DomEvent.addListener(this.inputDate, 'change', this.triggerOnSelectedDate.bind(this));
+
+		if (this.options.triggerFunctionOnLoad) {
+			this.options.onSelectDate(this.inputDate.children[0].value);
+		}
 
 		return this.container;
 	},
-	open() {
-		document.getElementById('input-control-date-picker').showPicker();
+	addNextButton: function () {
+		this.nextButton = L.DomUtil.create('span', 'next-icon', this.container);
+
+		/* When next is clicked date is changed */
+		L.DomEvent.addListener(this.nextButton, 'click', this.next.bind(this));
+	},
+	addBackButton: function () {
+		this.backButton = L.DomUtil.create('span', 'back-icon', this.container);
+
+		/* When back is clicked date is changedd */
+		L.DomEvent.addListener(this.backButton, 'click', this.back.bind(this));
+	},
+	open: function () {
+		L.DomUtil.get('input-control-date-picker').showPicker();
 		return this;
 	},
+	getCurrentDate: function () {
+		return L.DomUtil.get('input-control-date-picker').value;
+	},
+	setDate: function (date) {
+		L.DomUtil.get('input-control-date-picker').value = date;
+	},
 	triggerOnSelectedDate() {
-		this.options.onSelectDate(document.getElementById('input-control-date-picker').value);
+		this.options.onSelectDate(this.getCurrentDate());
+
 		return this;
+	},
+	back: function () {
+		var fecha = new Date(this.getCurrentDate());
+
+		fecha.setDate(fecha.getDate() - 1);
+
+		var nextDate = `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString().padStart(2, "0")}-${fecha.getDate().toString().padStart(2, "0")}`;
+
+		this.setDate(nextDate);
+
+		this.triggerOnSelectedDate();
+	},
+	next: function () {
+		var fecha = new Date(this.getCurrentDate());
+
+		fecha.setDate(fecha.getDate() + 1);
+
+		var nextDate = `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString().padStart(2, "0")}-${fecha.getDate().toString().padStart(2, "0")}`;
+
+		this.setDate(nextDate);
+
+		this.triggerOnSelectedDate();
 	},
 	show: function () {
 		L.DomUtil.setOpacity(this.container, 1);
@@ -81,7 +141,7 @@ L.Control.Calendar = L.Control.extend({
 	onRemove: function () {
 		L.DomUtil.remove(this.container);
 	},
-	_setupStylesContainer: function(){
+	_setupStylesContainer: function () {
 		this.container.style.marginLeft = this.options.marginLeft;
 		this.container.style.marginRight = this.options.marginRight;
 		this.container.style.marginTop = this.options.marginTop;
