@@ -33,6 +33,9 @@ declare module 'leaflet' {
       show(): this;
       hide(): this;
       isHide(): boolean;
+
+      next(): void;
+      back(): void;
     }
   }
 
