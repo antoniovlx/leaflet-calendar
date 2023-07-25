@@ -96,35 +96,94 @@ L.Control.Calendar = L.Control.extend({
 	getCurrentDate: function () {
 		return L.DomUtil.get('input-control-date-picker').value;
 	},
+	getMaxDate: function () {
+		return new Date(this.options.maxDate);
+	},
+	getMinDate: function () {
+		return new Date(this.options.minDate);
+	},
 	setDate: function (date) {
 		L.DomUtil.get('input-control-date-picker').value = date;
 	},
+	_isWithinLimitMax: function(currentDate){
+		var maxDate = this.getMaxDate()
+		return this.options.maxDate !== '' && currentDate < maxDate.setDate(maxDate.getDate() + 1)
+	},
+	_isWithinLimitMin: function(currentDate){
+		var minDate = this.getMinDate()
+		return this.options.minDate !== '' && currentDate > minDate.setDate(minDate.getDate() - 1)
+	},
 	triggerOnSelectedDate() {
-		this.options.onSelectDate(this.getCurrentDate());
+		if(this.getCurrentDate() === ''){
+			if(this.options.minDate !== ''){
+				this.setDate(this.options.minDate);
+			}else{
+				this.setDate(new Date().toJSON().slice(0, 10));
+			}
+		}else{
+			const day = new Date(this.getCurrentDate()).getDate();
 
+			if(this.options.minDate !== '' && this.options.maxDate !== ''){
+				if(day < this.getMinDate().getDate() &&  day > this.getMaxDate().getDate()){
+					this.setDate(this.options.minDate);
+				}
+			}else if (this.options.minDate !== ''){
+				if(day < this.getMinDate().getDate()){
+					this.setDate(this.options.minDate);
+				}
+			}else if (this.options.maxDate !== ''){
+				if(day > this.getMaxDate().getDate()){
+					this.setDate(this.options.maxDate);
+				}
+			}
+		}
+
+		this.options.onSelectDate(this.getCurrentDate())
 		return this;
 	},
 	back: function () {
 		var fecha = new Date(this.getCurrentDate());
-
 		fecha.setDate(fecha.getDate() - 1);
 
-		var nextDate = `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString().padStart(2, "0")}-${fecha.getDate().toString().padStart(2, "0")}`;
+		if (this.options.minDate !== '') {
+			var limitMinDate = new Date(this.options.minDate);
+			limitMinDate.setDate(limitMinDate.getDate() - 1);
 
-		this.setDate(nextDate);
+			if (limitMinDate.getTime() !== fecha.getTime()) {
+				var lastDate = `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString().padStart(2, "0")}-${fecha.getDate().toString().padStart(2, "0")}`;
 
-		this.triggerOnSelectedDate();
+				this.setDate(lastDate);
+				this.triggerOnSelectedDate();
+			}
+		} else {
+			var lastDate = `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString().padStart(2, "0")}-${fecha.getDate().toString().padStart(2, "0")}`;
+
+			this.setDate(lastDate);
+			this.triggerOnSelectedDate();
+		}
 	},
 	next: function () {
 		var fecha = new Date(this.getCurrentDate());
-
 		fecha.setDate(fecha.getDate() + 1);
 
-		var nextDate = `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString().padStart(2, "0")}-${fecha.getDate().toString().padStart(2, "0")}`;
+		if (this.options.maxDate !== '') {
+			var limitMaxDate = new Date(this.options.maxDate);
+			limitMaxDate.setDate(limitMaxDate.getDate() + 1);
 
-		this.setDate(nextDate);
+			if (limitMaxDate.getTime() !== fecha.getTime()) {
+				var nextDate = `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString().padStart(2, "0")}-${fecha.getDate().toString().padStart(2, "0")}`;
 
-		this.triggerOnSelectedDate();
+				this.setDate(nextDate);
+
+				this.triggerOnSelectedDate();
+			}
+		}else{
+			var nextDate = `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString().padStart(2, "0")}-${fecha.getDate().toString().padStart(2, "0")}`;
+
+			this.setDate(nextDate);
+
+			this.triggerOnSelectedDate();
+		}
 	},
 	show: function () {
 		L.DomUtil.setOpacity(this.container, 1);
