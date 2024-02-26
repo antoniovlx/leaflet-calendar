@@ -7,6 +7,7 @@
  */
 L.Control.Calendar = L.Control.extend({
 	options: {
+		id: 1,
 		position: "bottomright",
 		minDate: '',
 		maxDate: '',

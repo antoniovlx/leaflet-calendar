@@ -34,6 +34,7 @@ See table below for full description of customizable options for your calendar p
 
 | Option | Description      | Default             |
 | ----- | ----------- | ----------- |
+| id      | id of calendar picker. It's mandatory when using various calendar pickers on the same map.  | ''
 | position      | Position of calendar picker ('topleft','topright','bottomleft','bottomright') | "bottomright" |
 | minDate   | Minimum selectable date value in the calendar | '' |
 | maxDate | Maximun selectable date value in the calendar. | '' |
