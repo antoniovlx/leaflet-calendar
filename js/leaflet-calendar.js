@@ -45,7 +45,7 @@ L.Control.Calendar = L.Control.extend({
 		this.inputDate = L.DomUtil.create('div', 'date-control', this.container);
 
 		this.inputDate.innerHTML =
-			`<input type="date" name="date" id="input-control-date-picker" value="${this.options.value}"
+			`<input type="date" name="date" id="input-control-date-picker${this.options.id}" value="${this.options.value}"
 			min=${this.options.minDate} max="${this.options.maxDate}"></input>`;
 
 		if (this.options.nextButton) {
@@ -90,11 +90,11 @@ L.Control.Calendar = L.Control.extend({
 		L.DomEvent.addListener(this.backButton, 'click', this.back.bind(this));
 	},
 	open: function () {
-		L.DomUtil.get('input-control-date-picker').showPicker();
+		L.DomUtil.get('input-control-date-picker' + this.options.id).showPicker();
 		return this;
 	},
 	getCurrentDate: function () {
-		return L.DomUtil.get('input-control-date-picker').value;
+		return L.DomUtil.get('input-control-date-picker' + this.options.id).value;
 	},
 	getMaxDate: function () {
 		return new Date(this.options.maxDate);
@@ -103,7 +103,7 @@ L.Control.Calendar = L.Control.extend({
 		return new Date(this.options.minDate);
 	},
 	setDate: function (date) {
-		L.DomUtil.get('input-control-date-picker').value = date;
+		L.DomUtil.get('input-control-date-picker' + this.options.id).value = date;
 	},
 	_isWithinLimitMax: function(currentDate){
 		var maxDate = this.getMaxDate()
