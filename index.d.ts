@@ -6,6 +6,7 @@ declare module 'leaflet' {
   namespace Control {
 
     interface CalendarOptions {
+      id?: number;
       position?: ControlPosition;
       minDate?: string;
       maxDate?: string;
