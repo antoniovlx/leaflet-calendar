@@ -1,10 +1,10 @@
 {
   "name": "leaflet-calendar",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "A calendar date picker control for Leaflet",
   "main": "js/leaflet-calendar.js",
-	"types": "index.d.ts",
-	"styles": "css/leaflet-calendar.css",
+  "types": "index.d.ts",
+  "styles": "css/leaflet-calendar.css",
   "directories": {
     "example": "examples"
   },
@@ -16,16 +16,16 @@
     "type": "git",
     "url": "https://github.com/antoniovlx/leaflet-calendar.git"
   },
-	"publishConfig": {
-		"@antoniovida:registry": "https://npm.pkg.github.com"
-	},
+  "publishConfig": {
+    "@antoniovida:registry": "https://npm.pkg.github.com"
+  },
   "keywords": [
     "leaflet",
-		"control",
+    "control",
     "calendar",
     "date",
     "picker",
-		"map"
+    "map"
   ],
   "author": "Antonio Vida",
   "license": "MIT",
