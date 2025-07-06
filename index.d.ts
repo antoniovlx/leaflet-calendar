@@ -12,6 +12,7 @@ declare module 'leaflet' {
       maxDate?: string;
       value?: string;
       onSelectDate: Function;
+      time?: boolean;
       triggerFunctionOnLoad?: boolean;
       nextButton?: boolean;
       backButton?: boolean;

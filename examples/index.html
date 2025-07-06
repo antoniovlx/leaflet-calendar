@@ -31,6 +31,8 @@
         L.control.calendar({
             minDate: "2023-04-01",
             maxDate: "2023-04-29",
+            value: "2023-04-15",
+            time: true,
             onSelectDate: (value) => this.onSelectDate(value),
             position: "topleft",
         }).addTo(this.map);

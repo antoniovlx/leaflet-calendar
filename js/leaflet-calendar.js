@@ -16,6 +16,7 @@ L.Control.Calendar = L.Control.extend({
 			console.log("The function is mandatory")
 		},
 		triggerFunctionOnLoad: false,
+		time: false,
 		backButton: true,
 		nextButton: true,
 		marginLeft: "10px",
@@ -35,6 +36,7 @@ L.Control.Calendar = L.Control.extend({
 	onAdd: function (map) {
 		this.map = map;
 		this.sheet = document.createElement('style');
+
 		document.body.appendChild(this.sheet);
 
 		this.container = L.DomUtil.create('div', 'date-control-container');
@@ -45,9 +47,33 @@ L.Control.Calendar = L.Control.extend({
 
 		this.inputDate = L.DomUtil.create('div', 'date-control', this.container);
 
+		let inputType = 'date';
+		if (this.options.time) {
+			inputType = 'datetime-local';
+		}
+
+
+		/* If time is enabled, add time*/
+		if (this.options.time) {
+			let defaultTime = '00:00';
+
+			if (!this.options.value || !this.options.value.includes('T')) {
+				const now = new Date();
+				const hours = String(now.getHours()).padStart(2, '0');
+				const minutes = String(now.getMinutes()).padStart(2, '0');
+				defaultTime = `${hours}:${minutes}`;
+
+				this.options.minDate = this.options.minDate + 'T00:00';
+				this.options.maxDate = this.options.maxDate + 'T00:00';
+			}
+
+			this.options.value = this.options.value + 'T' + defaultTime;
+		}
+
 		this.inputDate.innerHTML =
-			`<input type="date" name="date" id="input-control-date-picker${this.options.id}" value="${this.options.value}"
+			`<input type="${inputType}" name="date" id="input-control-date-picker${this.options.id}" value="${this.options.value}"
 			min=${this.options.minDate} max="${this.options.maxDate}"></input>`;
+
 
 		if (this.options.nextButton) {
 			this.addNextButton();
@@ -106,34 +132,34 @@ L.Control.Calendar = L.Control.extend({
 	setDate: function (date) {
 		L.DomUtil.get('input-control-date-picker' + this.options.id).value = date;
 	},
-	_isWithinLimitMax: function(currentDate){
+	_isWithinLimitMax: function (currentDate) {
 		var maxDate = this.getMaxDate()
 		return this.options.maxDate !== '' && currentDate < maxDate.setDate(maxDate.getDate() + 1)
 	},
-	_isWithinLimitMin: function(currentDate){
+	_isWithinLimitMin: function (currentDate) {
 		var minDate = this.getMinDate()
 		return this.options.minDate !== '' && currentDate > minDate.setDate(minDate.getDate() - 1)
 	},
 	triggerOnSelectedDate() {
-		if(this.getCurrentDate() === ''){
-			if(this.options.minDate !== ''){
+		if (this.getCurrentDate() === '') {
+			if (this.options.minDate !== '') {
 				this.setDate(this.options.minDate);
-			}else{
+			} else {
 				this.setDate(new Date().toJSON().slice(0, 10));
 			}
-		}else{
+		} else {
 			const day = new Date(this.getCurrentDate()).getDate();
 
-			if(this.options.minDate !== '' && this.options.maxDate !== ''){
-				if(day < this.getMinDate().getDate() &&  day > this.getMaxDate().getDate()){
+			if (this.options.minDate !== '' && this.options.maxDate !== '') {
+				if (day < this.getMinDate().getDate() && day > this.getMaxDate().getDate()) {
 					this.setDate(this.options.minDate);
 				}
-			}else if (this.options.minDate !== ''){
-				if(day < this.getMinDate().getDate()){
+			} else if (this.options.minDate !== '') {
+				if (day < this.getMinDate().getDate()) {
 					this.setDate(this.options.minDate);
 				}
-			}else if (this.options.maxDate !== ''){
-				if(day > this.getMaxDate().getDate()){
+			} else if (this.options.maxDate !== '') {
+				if (day > this.getMaxDate().getDate()) {
 					this.setDate(this.options.maxDate);
 				}
 			}
@@ -143,49 +169,66 @@ L.Control.Calendar = L.Control.extend({
 		return this;
 	},
 	back: function () {
-		var fecha = new Date(this.getCurrentDate());
+		const fecha = new Date(this.getCurrentDate());
 		fecha.setDate(fecha.getDate() - 1);
 
-		if (this.options.minDate !== '') {
-			var limitMinDate = new Date(this.options.minDate);
+		const formatDate = (date) => {
+			const y = date.getFullYear();
+			const m = String(date.getMonth() + 1).padStart(2, "0");
+			const d = String(date.getDate()).padStart(2, "0");
+			let result = `${y}-${m}-${d}`;
+
+			if (this.options.time) {
+				const h = String(date.getHours()).padStart(2, "0");
+				const min = String(date.getMinutes()).padStart(2, "0");
+				result += `T${h}:${min}`;
+			}
+			return result;
+		};
+
+		if (this.options.minDate) {
+			const limitMinDate = new Date(this.options.minDate);
 			limitMinDate.setDate(limitMinDate.getDate() - 1);
 
-			if (limitMinDate.getTime() !== fecha.getTime()) {
-				var lastDate = `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString().padStart(2, "0")}-${fecha.getDate().toString().padStart(2, "0")}`;
-
-				this.setDate(lastDate);
-				this.triggerOnSelectedDate();
-			}
-		} else {
-			var lastDate = `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString().padStart(2, "0")}-${fecha.getDate().toString().padStart(2, "0")}`;
-
-			this.setDate(lastDate);
-			this.triggerOnSelectedDate();
+			if (fecha.getTime() <= limitMinDate.getTime()) return;
 		}
+
+		const lastDateStr = formatDate(fecha);
+
+		this.setDate(lastDateStr);
+		this.triggerOnSelectedDate();
 	},
 	next: function () {
-		var fecha = new Date(this.getCurrentDate());
+		const fecha = new Date(this.getCurrentDate());
 		fecha.setDate(fecha.getDate() + 1);
 
-		if (this.options.maxDate !== '') {
-			var limitMaxDate = new Date(this.options.maxDate);
+		const formatDate = (date) => {
+			const y = date.getFullYear();
+			const m = String(date.getMonth() + 1).padStart(2, "0");
+			const d = String(date.getDate()).padStart(2, "0");
+			let result = `${y}-${m}-${d}`;
+
+			if (this.options.time) {
+				const h = String(date.getHours()).padStart(2, "0");
+				const min = String(date.getMinutes()).padStart(2, "0");
+				result += `T${h}:${min}`;
+			}
+			return result;
+		};
+
+		const nextDateStr = formatDate(fecha);
+
+		if (this.options.maxDate) {
+			const limitMaxDate = new Date(this.options.maxDate);
 			limitMaxDate.setDate(limitMaxDate.getDate() + 1);
 
-			if (limitMaxDate.getTime() !== fecha.getTime()) {
-				var nextDate = `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString().padStart(2, "0")}-${fecha.getDate().toString().padStart(2, "0")}`;
-
-				this.setDate(nextDate);
-
-				this.triggerOnSelectedDate();
-			}
-		}else{
-			var nextDate = `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString().padStart(2, "0")}-${fecha.getDate().toString().padStart(2, "0")}`;
-
-			this.setDate(nextDate);
-
-			this.triggerOnSelectedDate();
+			if (fecha.getTime() >= limitMaxDate.getTime()) return;
 		}
+
+		this.setDate(nextDateStr);
+		this.triggerOnSelectedDate();
 	},
+
 	show: function () {
 		L.DomUtil.setOpacity(this.container, 1);
 		return this;
