@@ -3,11 +3,13 @@
 [![npm](https://img.shields.io/npm/v/leaflet-calendar.svg)](https://www.npmjs.com/package/leaflet-calendar)
 
 
-A calendar date picker for Leaflet.
+A calendar date picker for Leaflet, now with optional time selection.
 
 See the [demo](http://antoniovlx.github.io/leaflet-calendar/examples/index.html).
 
 ![calendar picker opened](./examples/images/control-opened.png)
+
+Now supports selecting both **date** and **time** via the native `datetime-local` input (if enabled).
 
 ## Usage
 
@@ -40,6 +42,7 @@ See table below for full description of customizable options for your calendar p
 | maxDate | Maximun selectable date value in the calendar. | '' |
 | value | Initial date selected (YYYY-MM-DD). | Current date |
 | onSelectDate   | Function that will execute when a date is selected.  | `function(value) { console.log("The function is mandatory"); }` |
+| time | support to time picker | false |
 | triggerFunctionOnLoad | Trigger `onSelectDate` function on first load | false |
 | nextButton | Add a next button | true |
 | backButton | Add a back button | true |
