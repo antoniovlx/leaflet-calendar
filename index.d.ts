@@ -36,6 +36,7 @@ declare module 'leaflet' {
       hide(): this;
       isHide(): boolean;
 
+      setDate(date: String): void;
       next(): void;
       back(): void;
     }

@@ -26,6 +26,23 @@
     font-size: 15px;
 }
 
+.date-placeholder {
+    position: absolute;
+    top: 50%;
+    left: 8px;
+    transform: translateY(-50%);
+    color: #999;
+    pointer-events: none;
+    font-size: 14px;
+    transition: 0.2s ease all;
+  }
+
+  input[type="date"]:not(:placeholder-shown) + .date-placeholder,
+  input[type="date"]:focus + .date-placeholder,
+  input[type="date"]:valid + .date-placeholder {
+    opacity: 0;
+  }
+
 .next-icon{
     background: #ffffffde url(../img/next.png) 97% 50% no-repeat;
     float: right;
