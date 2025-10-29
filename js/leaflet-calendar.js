@@ -1,37 +1,106 @@
 // @ts-nocheck
 /**
+ * Utility class for date operations
+ * @class DateUtils
+ * @private
+ */
+const DateUtils = {
+    /**
+     * Formats a date object to string
+     * @param {Date} date - Date to format
+     * @param {boolean} includeTime - Whether to include time in the output
+     * @returns {string} Formatted date string
+     */
+    formatDate: function(date, includeTime = false) {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, "0");
+        const d = String(date.getDate()).padStart(2, "0");
+        let result = `${y}-${m}-${d}`;
+
+        // Always include time for internal date handling to avoid timezone issues
+        if (includeTime) {
+            const h = String(date.getHours()).padStart(2, "0");
+            const min = String(date.getMinutes()).padStart(2, "0");
+            result += `T${h}:${min}`;
+        } else {
+            result += 'T00:00:00';
+        }
+        return result;
+    },
+
+    /**
+     * Validates if a date is within the given range
+     * @param {Date} date - Date to validate
+     * @param {string} minDate - Minimum date string
+     * @param {string} maxDate - Maximum date string
+     * @returns {boolean} True if date is within range
+     */
+    isDateInRange: function(date, minDate, maxDate) {
+        if (!date) return false;
+
+        const timestamp = date.getTime();
+        const minTimestamp = minDate ? new Date(minDate).getTime() : -Infinity;
+        const maxTimestamp = maxDate ? new Date(maxDate).getTime() : Infinity;
+
+        return timestamp >= minTimestamp && timestamp <= maxTimestamp;
+    }
+};
+
+/**
  * @name Calendar
  * @class L.Control.Calendar
  * @extends L.Control
  * @see L.control.calendar
+ *
+ * A Leaflet control that adds a date picker to the map
  */
 L.Control.Calendar = L.Control.extend({
 	options: {
+		/** @type {number} Unique identifier for the calendar */
 		id: 1,
+		/** @type {string} Position of the control on the map */
 		position: "bottomright",
+		/** @type {string} Minimum selectable date */
 		minDate: '',
+		/** @type {string} Maximum selectable date */
 		maxDate: '',
+		/** @type {string} Current selected date */
 		value: new Date().toJSON().slice(0, 10),
+		/** @type {Function} Callback function when date is selected */
 		onSelectDate: function (value) {
-			console.log("The function is mandatory")
+			console.warn("onSelectDate callback is not defined")
 		},
+		/** @type {boolean} Whether to trigger the callback on initialization */
 		triggerFunctionOnLoad: false,
+		/** @type {boolean} Whether to include time selection */
 		time: false,
+		/** @type {boolean} Whether to show back button */
 		backButton: true,
+		/** @type {boolean} Whether to show next button */
 		nextButton: true,
+		/** @type {string} Left margin of the control */
 		marginLeft: "10px",
+		/** @type {string} Right margin of the control */
 		marginRight: "10px",
+		/** @type {string} Top margin of the control */
 		marginTop: "10px",
+		/** @type {string} Bottom margin of the control */
 		marginBottom: "10px",
 	},
 
+	/**
+	 * Initializes the calendar control
+	 * @param {Object} options - Configuration options
+	 */
 	initialize: function (options) {
-		if (typeof options.onSelectDate != "function") {
-			options.onSelectDate = function (value) {
-				console.log("The function is mandatory");
-			};
+		if (typeof options.onSelectDate !== "function") {
+			options.onSelectDate = this.options.onSelectDate;
 		}
 		L.setOptions(this, options);
+
+		// Pre-calculate date limits if provided
+		this._minDateObj = this.options.minDate ? new Date(this.options.minDate) : null;
+		this._maxDateObj = this.options.maxDate ? new Date(this.options.maxDate) : null;
 	},
 	onAdd: function (map) {
 		this.map = map;
@@ -120,8 +189,18 @@ L.Control.Calendar = L.Control.extend({
 		L.DomUtil.get('input-control-date-picker' + this.options.id).showPicker();
 		return this;
 	},
+	/**
+	 * Gets the current date from the input
+	 * @returns {string} The current date with time component to avoid timezone issues
+	 */
 	getCurrentDate: function () {
-		return L.DomUtil.get('input-control-date-picker' + this.options.id).value;
+		const dateValue = L.DomUtil.get('input-control-date-picker' + this.options.id).value;
+		// If the date already includes time component (T), return as is
+		if (dateValue.includes('T')) {
+			return dateValue;
+		}
+		// Add time component to avoid timezone issues
+		return dateValue + 'T00:00:00';
 	},
 	getMaxDate: function () {
 		return new Date(this.options.maxDate);
@@ -140,93 +219,61 @@ L.Control.Calendar = L.Control.extend({
 		var minDate = this.getMinDate()
 		return this.options.minDate !== '' && currentDate > minDate.setDate(minDate.getDate() - 1)
 	},
+	/**
+	 * Triggers the onSelectDate callback with validated date
+	 * @returns {L.Control.Calendar} this
+	 */
 	triggerOnSelectedDate() {
-		if (this.getCurrentDate() === '') {
-			if (this.options.minDate !== '') {
-				this.setDate(this.options.minDate);
-			} else {
-				this.setDate(new Date().toJSON().slice(0, 10));
-			}
-		} else {
-			const day = new Date(this.getCurrentDate()).getDate();
+		let currentDate = this.getCurrentDate();
 
-			if (this.options.minDate !== '' && this.options.maxDate !== '') {
-				if (day < this.getMinDate().getDate() && day > this.getMaxDate().getDate()) {
-					this.setDate(this.options.minDate);
-				}
-			} else if (this.options.minDate !== '') {
-				if (day < this.getMinDate().getDate()) {
-					this.setDate(this.options.minDate);
-				}
-			} else if (this.options.maxDate !== '') {
-				if (day > this.getMaxDate().getDate()) {
-					this.setDate(this.options.maxDate);
-				}
+		if (!currentDate) {
+			currentDate = this.options.minDate || DateUtils.formatDate(new Date());
+			this.setDate(currentDate);
+		} else {
+			const dateObj = new Date(currentDate);
+			if (!DateUtils.isDateInRange(dateObj, this.options.minDate, this.options.maxDate)) {
+				currentDate = this.options.minDate || DateUtils.formatDate(new Date());
+				this.setDate(currentDate);
 			}
 		}
 
-		this.options.onSelectDate(this.getCurrentDate())
+		this.options.onSelectDate(currentDate);
 		return this;
 	},
+	/**
+	 * Move to the previous date
+	 * @returns {L.Control.Calendar} this
+	 */
 	back: function () {
-		const fecha = new Date(this.getCurrentDate());
-		fecha.setDate(fecha.getDate() - 1);
+		const currentDate = new Date(this.getCurrentDate());
+		currentDate.setDate(currentDate.getDate() - 1);
 
-		const formatDate = (date) => {
-			const y = date.getFullYear();
-			const m = String(date.getMonth() + 1).padStart(2, "0");
-			const d = String(date.getDate()).padStart(2, "0");
-			let result = `${y}-${m}-${d}`;
-
-			if (this.options.time) {
-				const h = String(date.getHours()).padStart(2, "0");
-				const min = String(date.getMinutes()).padStart(2, "0");
-				result += `T${h}:${min}`;
-			}
-			return result;
-		};
-
-		if (this.options.minDate) {
-			const limitMinDate = new Date(this.options.minDate);
-			limitMinDate.setDate(limitMinDate.getDate() - 1);
-
-			if (fecha.getTime() <= limitMinDate.getTime()) return;
+		if (!DateUtils.isDateInRange(currentDate, this.options.minDate, this.options.maxDate)) {
+			return this;
 		}
 
-		const lastDateStr = formatDate(fecha);
-
-		this.setDate(lastDateStr);
+		const formattedDate = DateUtils.formatDate(currentDate, this.options.time);
+		this.setDate(formattedDate);
 		this.triggerOnSelectedDate();
+		return this;
 	},
+
+	/**
+	 * Move to the next date
+	 * @returns {L.Control.Calendar} this
+	 */
 	next: function () {
-		const fecha = new Date(this.getCurrentDate());
-		fecha.setDate(fecha.getDate() + 1);
+		const currentDate = new Date(this.getCurrentDate());
+		currentDate.setDate(currentDate.getDate() + 1);
 
-		const formatDate = (date) => {
-			const y = date.getFullYear();
-			const m = String(date.getMonth() + 1).padStart(2, "0");
-			const d = String(date.getDate()).padStart(2, "0");
-			let result = `${y}-${m}-${d}`;
-
-			if (this.options.time) {
-				const h = String(date.getHours()).padStart(2, "0");
-				const min = String(date.getMinutes()).padStart(2, "0");
-				result += `T${h}:${min}`;
-			}
-			return result;
-		};
-
-		const nextDateStr = formatDate(fecha);
-
-		if (this.options.maxDate) {
-			const limitMaxDate = new Date(this.options.maxDate);
-			limitMaxDate.setDate(limitMaxDate.getDate() + 1);
-
-			if (fecha.getTime() >= limitMaxDate.getTime()) return;
+		if (!DateUtils.isDateInRange(currentDate, this.options.minDate, this.options.maxDate)) {
+			return this;
 		}
 
-		this.setDate(nextDateStr);
+		const formattedDate = DateUtils.formatDate(currentDate, this.options.time);
+		this.setDate(formattedDate);
 		this.triggerOnSelectedDate();
+		return this;
 	},
 
 	show: function () {
