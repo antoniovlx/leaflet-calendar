@@ -5,45 +5,45 @@
  * @private
  */
 const DateUtils = {
-    /**
-     * Formats a date object to string
-     * @param {Date} date - Date to format
-     * @param {boolean} includeTime - Whether to include time in the output
-     * @returns {string} Formatted date string
-     */
-    formatDate: function(date, includeTime = false) {
-        const y = date.getFullYear();
-        const m = String(date.getMonth() + 1).padStart(2, "0");
-        const d = String(date.getDate()).padStart(2, "0");
-        let result = `${y}-${m}-${d}`;
+	/**
+	 * Formats a date object to string
+	 * @param {Date} date - Date to format
+	 * @param {boolean} includeTime - Whether to include time in the output
+	 * @returns {string} Formatted date string
+	 */
+	formatDate: function (date, includeTime = false) {
+		const y = date.getFullYear();
+		const m = String(date.getMonth() + 1).padStart(2, "0");
+		const d = String(date.getDate()).padStart(2, "0");
+		let result = `${y}-${m}-${d}`;
 
-        // Always include time for internal date handling to avoid timezone issues
-        if (includeTime) {
-            const h = String(date.getHours()).padStart(2, "0");
-            const min = String(date.getMinutes()).padStart(2, "0");
-            result += `T${h}:${min}`;
-        } else {
-            result += 'T00:00:00';
-        }
-        return result;
-    },
+		// Always include time for internal date handling to avoid timezone issues
+		if (includeTime) {
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        result += `T${hours}:${minutes}`
+    } else {
+			result += 'T00:00:00';
+		}
+		return result;
+	},
 
-    /**
-     * Validates if a date is within the given range
-     * @param {Date} date - Date to validate
-     * @param {string} minDate - Minimum date string
-     * @param {string} maxDate - Maximum date string
-     * @returns {boolean} True if date is within range
-     */
-    isDateInRange: function(date, minDate, maxDate) {
-        if (!date) return false;
+	/**
+	 * Validates if a date is within the given range
+	 * @param {Date} date - Date to validate
+	 * @param {string} minDate - Minimum date string
+	 * @param {string} maxDate - Maximum date string
+	 * @returns {boolean} True if date is within range
+	 */
+	isDateInRange: function (date, minDate, maxDate) {
+		if (!date) return false;
 
-        const timestamp = date.getTime();
-        const minTimestamp = minDate ? new Date(minDate).getTime() : -Infinity;
-        const maxTimestamp = maxDate ? new Date(maxDate).getTime() : Infinity;
+		const timestamp = date.getTime();
+		const minTimestamp = minDate ? new Date(minDate).getTime() : -Infinity;
+		const maxTimestamp = maxDate ? new Date(maxDate).getTime() : Infinity;
 
-        return timestamp >= minTimestamp && timestamp <= maxTimestamp;
-    }
+		return timestamp >= minTimestamp && timestamp <= maxTimestamp;
+	}
 };
 
 /**
@@ -61,9 +61,9 @@ L.Control.Calendar = L.Control.extend({
 		/** @type {string} Position of the control on the map */
 		position: "bottomright",
 		/** @type {string} Minimum selectable date */
-		minDate: '',
+		minDate: '2025-10-01',
 		/** @type {string} Maximum selectable date */
-		maxDate: '',
+		maxDate: '2025-10-31',
 		/** @type {string} Current selected date */
 		value: new Date().toJSON().slice(0, 10),
 		/** @type {Function} Callback function when date is selected */
@@ -141,7 +141,7 @@ L.Control.Calendar = L.Control.extend({
 
 		this.inputDate.innerHTML =
 			`<input type="${inputType}" name="date" id="input-control-date-picker${this.options.id}" value="${this.options.value}"
-			min=${this.options.minDate} max="${this.options.maxDate}"></input>`;
+			min="${this.options.minDate}" max="${this.options.maxDate}"></input>`;
 
 
 		if (this.options.nextButton) {
@@ -209,7 +209,19 @@ L.Control.Calendar = L.Control.extend({
 		return new Date(this.options.minDate);
 	},
 	setDate: function (date) {
-		L.DomUtil.get('input-control-date-picker' + this.options.id).value = date;
+		const dateObj = new Date(date);
+
+		if (DateUtils.isDateInRange(dateObj, this.options.minDate, this.options.maxDate)) {
+
+			if(this.options.time){
+				L.DomUtil.get('input-control-date-picker' + this.options.id).value = date;
+				return;
+			}else{
+				const onlyDate = date.split('T')[0];
+				L.DomUtil.get('input-control-date-picker' + this.options.id).value = onlyDate;
+				return;
+			}
+		}
 	},
 	_isWithinLimitMax: function (currentDate) {
 		var maxDate = this.getMaxDate()

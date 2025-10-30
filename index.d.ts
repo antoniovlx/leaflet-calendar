@@ -43,6 +43,6 @@ declare module 'leaflet' {
   }
 
   namespace control {
-    export function calendar(options?: Control.CalendarOptions): Control.Calendar;
+    export function calendar(options?: Control.CalendarOptions): L.Control.Calendar;
   }
 }
