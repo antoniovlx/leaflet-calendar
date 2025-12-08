@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple Instances Example - Leaflet Calendar</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="../css/leaflet-calendar.css" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        #map {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="../js/leaflet-calendar.js"></script>
+    <script>
+        // Create a Leaflet map
+        var map = L.map('map').setView([51.505, -0.09], 13);
+        
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 19
+        }).addTo(map);
+        
+        // Create first calendar instance (top-right)
+        var calendar1 = L.control.calendar({
+            id: 'calendar-1',
+            position: 'topright',
+            onSelectDate: function(value) {
+                console.log('Calendar 1 selected: ' + value);
+                console.log('Calendar 1 current date: ' + calendar1.getCurrentDate());
+            }
+        }).addTo(map);
+        
+        // Create second calendar instance (top-left)
+        var calendar2 = L.control.calendar({
+            id: 'calendar-2',
+            position: 'topleft',
+            onSelectDate: function(value) {
+                console.log('Calendar 2 selected: ' + value);
+                console.log('Calendar 2 current date: ' + calendar2.getCurrentDate());
+            }
+        }).addTo(map);
+        
+        // Create third calendar instance (bottom-right)
+        var calendar3 = L.control.calendar({
+            id: 'calendar-3',
+            position: 'bottomright',
+            onSelectDate: function(value) {
+                console.log('Calendar 3 selected: ' + value);
+                console.log('Calendar 3 current date: ' + calendar3.getCurrentDate());
+            }
+        }).addTo(map);
+        
+        // Log initial state
+        console.log('Open browser console to see logs from each instance');
+        console.log('Calendar 1 initial date: ' + calendar1.getCurrentDate());
+        console.log('Calendar 2 initial date: ' + calendar2.getCurrentDate());
+        console.log('Calendar 3 initial date: ' + calendar3.getCurrentDate());
+    </script>
+</body>
+</html>
