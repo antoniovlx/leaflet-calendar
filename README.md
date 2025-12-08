@@ -9,6 +9,47 @@ See the [demo](http://antoniovlx.github.io/leaflet-calendar/examples/index.html)
 
 ![calendar picker opened](./examples/images/control-opened.png)
 
+## Examples
+
+The [examples/](./examples/) folder contains several ready-to-open example pages demonstrating various features:
+
+- **[basic.html](./examples/basic.html)** - Minimal usage example showing how to add the calendar control to a Leaflet map with an `onSelectDate` callback
+- **[time.html](./examples/time.html)** - Time picker usage with `datetime-local` input and `minDate` constraint
+- **[multiple.html](./examples/multiple.html)** - Multiple independent calendar instances on the same map
+- **[programmatic.html](./examples/programmatic.html)** - Programmatic control using methods like `next()`, `back()`, `setDate()`, and `getCurrentDate()`
+
+### Quick Start
+
+Basic usage:
+
+```javascript
+// Add calendar to your Leaflet map
+L.control.calendar({
+    position: 'topright',
+    onSelectDate: function(value) {
+        console.log('Selected date: ' + value);
+    }
+}).addTo(map);
+```
+
+With time picker enabled:
+
+```javascript
+// Calendar with time selection
+L.control.calendar({
+    position: 'topright',
+    time: true,
+    minDate: '2024-01-01T09:00',
+    onSelectDate: function(value) {
+        console.log('Selected datetime: ' + value);
+    }
+}).addTo(map);
+```
+
+**Date formats:**
+- Without time: `YYYY-MM-DD` (e.g., `2024-01-15`)
+- With time enabled: `YYYY-MM-DDTHH:mm` (e.g., `2024-01-15T14:30`)
+
 ## Features
 - Date picker with optional time selection via native `datetime-local` input
 - Robust timezone handling for consistent date operations

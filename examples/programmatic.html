@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programmatic Control Example - Leaflet Calendar</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="../css/leaflet-calendar.css" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        #map {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        #controls {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        button {
+            margin: 0 5px;
+            padding: 8px 12px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            background: white;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #f0f0f0;
+        }
+        #info {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <button onclick="calendar.back()">Previous Day (back())</button>
+        <button onclick="calendar.next()">Next Day (next())</button>
+        <button onclick="calendar.open()">Open Picker (open())</button>
+        <button onclick="setSpecificDate()">Set to 2024-06-15 (setDate())</button>
+        <button onclick="showCurrentDate()">Show Current (getCurrentDate())</button>
+        <div id="info">Current date will be displayed here</div>
+    </div>
+    
+    <div id="map"></div>
+    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="../js/leaflet-calendar.js"></script>
+    <script>
+        // Create a Leaflet map
+        var map = L.map('map').setView([51.505, -0.09], 13);
+        
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 19
+        }).addTo(map);
+        
+        // Create calendar control
+        var calendar = L.control.calendar({
+            position: 'topright',
+            value: '2024-01-15',
+            onSelectDate: function(value) {
+                console.log('Date changed to: ' + value);
+                updateInfo('Date changed to: ' + value);
+            }
+        }).addTo(map);
+        
+        // Helper function to update info display
+        function updateInfo(message) {
+            document.getElementById('info').textContent = message;
+        }
+        
+        // Function to set a specific date
+        function setSpecificDate() {
+            calendar.setDate('2024-06-15');
+            updateInfo('Date set to: 2024-06-15');
+        }
+        
+        // Function to show current date
+        function showCurrentDate() {
+            var currentDate = calendar.getCurrentDate();
+            updateInfo('Current date: ' + currentDate);
+            alert('Current date: ' + currentDate);
+        }
+        
+        // Display initial date
+        updateInfo('Current date: ' + calendar.getCurrentDate());
+    </script>
+</body>
+</html>
